@@ -15,12 +15,19 @@ export default function App() {
   const [search, setSearch] = useState('');
   const [filmCharacter, setFilmCharacter] = useState([{}])
   const [character, setCharacter] = useState<CharacterProps[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingFilms, setLoadingFilms] = useState(true);
 
   useEffect(() => {
     async function fetchCharacter () {
-      const res = await fetch(`https://swapi.dev/api/people/?search=${search}`);
-      const data = await res.json();
-      setCharacter(data.results);
+      try {
+        const res = await fetch(`https://swapi.dev/api/people/?search=${search}`);
+        const data = await res.json();
+        setLoading(false);
+        setCharacter(data.results);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     fetchCharacter();
@@ -30,6 +37,7 @@ export default function App() {
     const filmUrls = character.films;
     const films = await fetchFilms(filmUrls);
     setFilmCharacter(films);
+    setLoadingFilms(true)
   }
   
   async function fetchFilms(filmUrls: string[]) { //Fetch das Urls
@@ -40,7 +48,9 @@ export default function App() {
    
     return Promise.all(filmPromises);
   }
-
+  if (loading) {
+    return <div>Loading...</div>;
+  }
   
   return (
     <TMenu>
@@ -51,6 +61,7 @@ export default function App() {
           eye_color={String(v.eye_color)}
           birth_year={v.birth_year}
           gender={v.gender}
+          loading = {loadingFilms}
           // @ts-ignore
           films={filmCharacter}
           onClick={() => handleClick(v)}

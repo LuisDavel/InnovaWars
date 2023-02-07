@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import * as S from './styles';
 
-type dataProps = {
+type dataProps = { 
+  loading: boolean,
   name: String,
   eye_color: String,
   birth_year: String,
@@ -15,9 +16,8 @@ type FilmProps ={
   release_date: String;
 }
 
-const CardCharact = ({name, eye_color, birth_year, gender, films ,onClick }:dataProps) => {
+const CardCharact = ({name, eye_color, birth_year, gender, loading ,films ,onClick }:dataProps) => {
   const [isClick, setIsClick] = useState(false)
-  console.log(films)
   return (
     <>
       <S.WrapperText onClick={() => {onClick(); setIsClick(!isClick)}}>
